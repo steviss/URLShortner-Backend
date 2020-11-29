@@ -8,7 +8,6 @@ services:
             args:
                 NODE_VERSION: ${NODE_VERSION}
         depends_on:
-            - postgres
             - redis
         ports:
             - '${EXPRESS_PORT}:${EXPRESS_PORT}'
