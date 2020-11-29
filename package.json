@@ -17,7 +17,7 @@
     "author": "steviss",
     "license": "ISC",
     "devDependencies": {
-        "@types/request": "^2.48.5",
+        "@types/morgan": "^1.9.2",
         "@types/connect-redis": "^0.0.14",
         "@types/cors": "^2.8.7",
         "@types/express": "^4.17.7",
@@ -25,6 +25,7 @@
         "@types/ioredis": "^4.17.3",
         "@types/node": "^14.0.27",
         "@types/redis": "^2.8.25",
+        "@types/request": "^2.48.5",
         "@types/uuid": "^8.0.1",
         "nodemon": "^2.0.4",
         "ts-node": "^8.10.2",
@@ -39,7 +40,9 @@
         "dotenv-safe": "^8.2.0",
         "express": "^4.17.1",
         "express-session": "^1.17.1",
+        "helmet": "^4.2.0",
         "ioredis": "^4.17.3",
+        "morgan": "^1.10.0",
         "reflect-metadata": "^0.1.13",
         "uuid": "^8.3.0"
     }

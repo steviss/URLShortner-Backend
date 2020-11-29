@@ -6,26 +6,35 @@ import cors from 'cors';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import { redisConfig } from './redis.config';
+import morgan from 'morgan';
+import helmet from 'helmet';
 
 const main = async () => {
     /* Expresss */
     const app = express();
-
-    //Delete all the posts, you need to turn off synchronize first (syncronize will crash this operation, because it will try to fill the items that are being deleted)
-    //await User.delete({});
 
     /* Redis Stuff */
     /* Redis server for Sessions not using JWT */
     const RedisStore = connectRedis(session);
     const redis = new Redis(redisConfig);
 
-    //Cors
+    /* CORS Stuff */
     app.use(
         cors({
             origin: `http://${config.__PROD__ ? config.__DOMAIN__ : config.__DEV_DOMAIN__}`,
             credentials: true,
         }),
     );
+
+    /* Helmet Stuff */
+    /* Basic Security */
+    app.use(helmet());
+
+    /* Morgan Stuff */
+    /* Logging */
+    app.use(morgan('tiny'));
+
+    app.use(express.json());
 
     app.use(
         session({
@@ -42,6 +51,16 @@ const main = async () => {
             resave: false,
         }),
     );
+    app.get('/', function (_, res) {
+        res.send('hello, world!');
+    });
+
+    /* Listen */
+    app.listen(config.__PORT__, () => {
+        console.log(`CORS: http://${config.__PROD__ ? config.__DOMAIN__ : config.__DEV_DOMAIN__}`);
+        console.log(`Server started on port: ${config.__PORT__}`);
+        console.log(`Is this production: ${config.__PROD__}`);
+    });
 };
 
 /* Catch errors */
