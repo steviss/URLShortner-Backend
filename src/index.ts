@@ -1,6 +1,7 @@
 import 'reflect-metadata';
+import 'module-alias/register';
 import express from 'express';
-import { config } from './utils/_constants';
+import { config } from '@utils/_constants';
 import Redis from 'ioredis';
 import cors from 'cors';
 import session from 'express-session';
@@ -8,8 +9,29 @@ import connectRedis from 'connect-redis';
 import { redisConfig } from './redis.config';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import { typeormConfig } from './typeorm.config';
+import { createConnection } from 'typeorm';
+import Entities from '@entities';
+import { routeMiddleware } from '@routes';
+
+/* Adding userId to Session Context */
+
+declare module 'express-session' {
+    interface Session {
+        userId: string;
+    }
+}
 
 const main = async () => {
+    /* Type ORM */
+    /* Connecting to DB */
+    await createConnection({
+        ...typeormConfig,
+        entities: Entities,
+        //ENABLE BELOW FOR FIRST RUN INSTALL (POPULATES MYSQL WITH NESCESSARY DATA)
+        //synchronize: true,
+    });
+
     /* Expresss */
     const app = express();
 
@@ -32,10 +54,20 @@ const main = async () => {
 
     /* Morgan Stuff */
     /* Logging */
-    app.use(morgan('tiny'));
+    app.use(morgan('common'));
 
+    /* Server Public Folder */
+    app.use(express.static('./public'));
+
+    /* Аccept JSON data оnly */
     app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
+    /* Express Slow Down */
+    /* for reverse proxy stuff */
+    app.enable('trust proxy');
+
+    /* Create a session, I might not use this. It just might be fully anonymous */
     app.use(
         session({
             name: config.__SESSIONCOOKIENAME__,
@@ -51,8 +83,15 @@ const main = async () => {
             resave: false,
         }),
     );
-    app.get('/', function (_, res) {
-        res.send('hello, world!');
+
+    /* Routes Middleware*/
+    app.use(routeMiddleware(redis));
+
+    /* Register a Redirect it can be anonymous or registered */
+    /* If registered, save an ownerID */
+
+    app.use((_, res) => {
+        res.status(404).redirect('/404');
     });
 
     /* Listen */

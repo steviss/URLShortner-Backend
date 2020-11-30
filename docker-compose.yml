@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
     app:
@@ -9,6 +9,7 @@ services:
                 NODE_VERSION: ${NODE_VERSION}
         depends_on:
             - redis
+            - mysql
         ports:
             - '${EXPRESS_PORT}:${EXPRESS_PORT}'
         volumes:
@@ -43,6 +44,40 @@ services:
             - REDIS_HOST=${REDIS_HOST}
             - REDIS_PASSWORD=${REDIS_PASSWORD}
             - REDIS_PORT=${REDIS_PORT}
+        networks:
+            - backend
+        restart: always
+
+    mysql:
+        image: mysql:latest
+        container_name: '${APP_NAME}-MySQL'
+        command: --default-authentication-plugin=mysql_native_password
+        ports:
+            - '3306:3306'
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_DATABASE=${DB_NAME}
+            - MYSQL_ROOT_HOST=mysql
+            - MYSQL_USER=${DB_USERNAME}
+            - MYSQL_PASSWORD=${DB_PASSWORD}
+        volumes:
+            - './docker/db/mysql:/var/lib/mysql'
+        networks:
+            - backend
+        restart: always
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: '${APP_NAME}-PHPMyAdmin'
+        ports:
+            - '8082:80'
+        environment:
+            - PMA_HOST=mysql
+            - PMA_USER=${DB_USERNAME}
+            - PMA_PASSWORD=${DB_PASSWORD}
+            - PHP_UPLOAD_MAX_FILESIZE=100MB
+        depends_on:
+            - mysql
         networks:
             - backend
         restart: always
