@@ -1,18 +1,18 @@
 import 'reflect-metadata';
-import 'module-alias/register';
 import express from 'express';
-import { config } from '@utils/_constants';
 import Redis from 'ioredis';
 import cors from 'cors';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import { redisConfig } from './redis.config';
 import morgan from 'morgan';
 import helmet from 'helmet';
-import { typeormConfig } from './typeorm.config';
 import { createConnection } from 'typeorm';
-import Entities from '@entities';
-import { routeMiddleware } from '@routes';
+import { config } from './utils/_constants';
+import { typeormConfig } from './typeorm.config';
+import { redisConfig } from './redis.config';
+import { routeMiddleware } from './routes';
+import { Redirect } from './entities/Redirect';
+import { User } from './entities/User';
 
 /* Adding userId to Session Context */
 
@@ -27,7 +27,7 @@ const main = async () => {
     /* Connecting to DB */
     await createConnection({
         ...typeormConfig,
-        entities: Entities,
+        entities: [User, Redirect],
         //ENABLE BELOW FOR FIRST RUN INSTALL (POPULATES MYSQL WITH NESCESSARY DATA)
         //synchronize: true,
     });

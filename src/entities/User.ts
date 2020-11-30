@@ -1,5 +1,5 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm';
-import { Redirect } from '.';
+import { Redirect } from './Redirect';
 
 @Entity()
 export class User extends BaseEntity {

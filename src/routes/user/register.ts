@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { User } from '@entities';
 import * as yup from 'yup';
 import rateLimit from 'express-rate-limit';
 import slowDown from 'express-slow-down';
 import { getRepository } from 'typeorm';
 import argon2 from 'argon2';
-import { ErrorDispatch } from '@utils/errorDispatch';
-import { slowDownConfig } from 'slowDown.config';
-import { rateLimitConfig } from 'rateLimit.config';
+import { ErrorDispatch } from '../../utils/errorDispatch';
+import { slowDownConfig } from '../../slowDown.config';
+import { rateLimitConfig } from '../../rateLimit.config';
+import { User } from '../../entities/User';
 
 const schema = yup.object().shape({
     password: yup.string().required('No password provided.').min(8, 'Password is too short - should be 8 chars minimum.'),

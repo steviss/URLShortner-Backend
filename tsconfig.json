@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
-        "lib": ["dom", "es6", "es2017", "esnext", "es2016.array.include", "esnext.asynciterable"],
+        "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
         "skipLibCheck": true,
         "sourceMap": true,
         "outDir": "./dist",
@@ -21,13 +21,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "resolveJsonModule": true,
-        "baseUrl": "./src",
-        "paths": {
-            "@root/*": ["./"],
-            "@routes": ["routes/index.ts"],
-            "@entities": ["entities/index.ts"],
-            "@utils/*": ["utils/*"]
-        }
+        "baseUrl": "./src"
     },
     "exclude": ["node_modules"],
     "include": ["./src/**/*.tsx", "./src/**/*.ts"]
