@@ -1,10 +1,7 @@
 import { Router } from 'express';
 import { Redis } from 'ioredis';
-import { createRedirect } from './redirect/createRedirect';
-import { slugRedirect } from './redirect/slugRedirect';
-import { changePassword } from './user/changePassword';
-import { forgotPassword } from './user/forgotPassword';
-import { register } from './user/register';
+import { createRedirect, slugRedirect } from './redirect';
+import { changePassword, forgotPassword, register } from './user';
 
 export const routeMiddleware = (redis: Redis) => {
     const routes = Router();

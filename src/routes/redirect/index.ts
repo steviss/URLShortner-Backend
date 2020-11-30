@@ -1,4 +1,2 @@
-import { createRedirect } from './createRedirect';
-import { slugRedirect } from './slugRedirect';
-
-export default { createRedirect, slugRedirect };
+export { createRedirect } from './createRedirect';
+export { slugRedirect } from './slugRedirect';
