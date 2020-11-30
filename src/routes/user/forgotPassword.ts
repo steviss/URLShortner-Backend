@@ -1,15 +1,15 @@
-import { User } from '@entities';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import slowDown from 'express-slow-down';
-import { rateLimitConfig } from 'rateLimit.config';
-import { slowDownConfig } from 'slowDown.config';
 import * as yup from 'yup';
-import { ErrorDispatch } from '@utils/errorDispatch';
 import { Redis } from 'ioredis';
 import { v4 } from 'uuid';
-import { config } from '@utils/_constants';
-import { sendEmail } from '@utils/sendEmail';
+import { rateLimitConfig } from '../../rateLimit.config';
+import { slowDownConfig } from '../../slowDown.config';
+import { User } from '../../entities';
+import { ErrorDispatch } from '../../utils/errorDispatch';
+import { config } from '../../utils/_constants';
+import { sendEmail } from '../../utils/sendEmail';
 
 const schema = yup.object().shape({
     email: yup.string().email('Invalid email').required('Required'),

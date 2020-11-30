@@ -1,13 +1,13 @@
-import { User } from '@entities';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import slowDown from 'express-slow-down';
-import { rateLimitConfig } from 'rateLimit.config';
-import { slowDownConfig } from 'slowDown.config';
-import * as yup from 'yup';
-import { ErrorDispatch } from '@utils/errorDispatch';
 import { Redis } from 'ioredis';
-import { config } from '@utils/_constants';
+import { config } from '../../utils/_constants';
+import { ErrorDispatch } from '../../utils/errorDispatch';
+import { rateLimitConfig } from '../../rateLimit.config';
+import { slowDownConfig } from '../../slowDown.config';
+import { User } from '../../entities';
+import * as yup from 'yup';
 import argon2 from 'argon2';
 
 const schema = yup.object().shape({

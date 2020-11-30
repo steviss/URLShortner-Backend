@@ -1,18 +1,17 @@
 import 'reflect-metadata';
-import 'module-alias/register';
 import express from 'express';
-import { config } from '@utils/_constants';
 import Redis from 'ioredis';
 import cors from 'cors';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import { redisConfig } from './redis.config';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import { typeormConfig } from './typeorm.config';
+import { redisConfig } from './redis.config';
+import { config } from './utils/_constants';
 import { createConnection } from 'typeorm';
-import Entities from '@entities';
-import { routeMiddleware } from '@routes';
+import Entities from './entities';
+import { routeMiddleware } from './routes';
 
 /* Adding userId to Session Context */
 
@@ -85,7 +84,7 @@ const main = async () => {
     );
 
     /* Routes Middleware*/
-    app.use(routeMiddleware(redis));
+    app.use('/', routeMiddleware(redis));
 
     /* Register a Redirect it can be anonymous or registered */
     /* If registered, save an ownerID */

@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { Redirect } from '@entities';
-import { ErrorDispatch } from '@utils/errorDispatch';
+import { Redirect } from '../../entities';
+import { ErrorDispatch } from '../../utils/errorDispatch';
 
 export const slugRedirect = () => {
     const router = Router();

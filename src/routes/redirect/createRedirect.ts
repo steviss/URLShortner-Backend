@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { Redirect } from '@entities';
 import rateLimit from 'express-rate-limit';
 import slowDown from 'express-slow-down';
 import { nanoid } from 'nanoid';
 import * as yup from 'yup';
 import { getRepository } from 'typeorm';
-import { config } from '@utils/_constants';
-import { rateLimitConfig } from 'rateLimit.config';
-import { slowDownConfig } from 'slowDown.config';
+import { Redirect } from '../../entities';
+import { config } from '../../utils/_constants';
+import { rateLimitConfig } from '../../rateLimit.config';
+import { slowDownConfig } from '../../slowDown.config';
 
 const schema = yup.object().shape({
     slug: yup
