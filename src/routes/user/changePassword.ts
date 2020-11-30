@@ -17,7 +17,7 @@ const schema = yup.object().shape({
 
 export const changePassword = (redis: Redis) => {
     const router = Router();
-    return router.post('/forgot-password', slowDown(slowDownConfig), rateLimit(rateLimitConfig), async (req, res, next) => {
+    return router.patch('/change-password', slowDown(slowDownConfig), rateLimit(rateLimitConfig), async (req, res, next) => {
         let { token, newPassword } = req.body;
         try {
             await schema.validate({
