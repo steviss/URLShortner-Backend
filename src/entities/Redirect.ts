@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne } from 'typeorm';
+import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, UpdateDateColumn } from 'typeorm';
 import { User } from '.';
 
 @Entity()
@@ -6,7 +6,7 @@ export class Redirect extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
-    @Column()
+    @Column({ unique: true })
     slug: string;
 
     @Column()
@@ -20,4 +20,7 @@ export class Redirect extends BaseEntity {
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
 }
