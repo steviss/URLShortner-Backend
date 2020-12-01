@@ -6,12 +6,16 @@ import session from 'express-session';
 import connectRedis from 'connect-redis';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import slowDown from 'express-slow-down';
 import { typeormConfig } from './typeorm.config';
 import { redisConfig } from './redis.config';
 import { config } from './utils/_constants';
 import { createConnection } from 'typeorm';
 import Entities from './entities';
 import { routeMiddleware } from './routes';
+import { rateLimitConfig } from './rateLimit.config';
+import { slowDownConfig } from './slowDown.config';
 
 /* Adding userId to Session Context */
 
@@ -84,14 +88,7 @@ const main = async () => {
     );
 
     /* Routes Middleware*/
-    app.use('/', routeMiddleware(redis));
-
-    /* Register a Redirect it can be anonymous or registered */
-    /* If registered, save an ownerID */
-
-    app.use((_, res) => {
-        res.status(404).redirect('/404');
-    });
+    app.use('/', slowDown(slowDownConfig), rateLimit(rateLimitConfig), routeMiddleware(redis));
 
     /* Listen */
     app.listen(config.__PORT__, () => {

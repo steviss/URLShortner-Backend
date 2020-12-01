@@ -12,12 +12,6 @@ export class User extends BaseEntity {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @Column({ nullable: true })
-    firstName: string;
-
-    @Column({ nullable: true })
-    lastName: string;
-
     @Column({ unique: true })
     email!: string;
 
