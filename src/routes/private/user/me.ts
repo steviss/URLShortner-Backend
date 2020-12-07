@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
-import { User } from '../../entities';
-import { ErrorDispatch } from '../../utils/errorDispatch';
+import { User } from '../../../entities';
+import { ErrorDispatch } from '../../../utils/errorDispatch';
 
 interface meObject {
     id: string;

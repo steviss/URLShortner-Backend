@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { Redirect } from '../../entities';
+import { Redirect } from '../../../entities';
 import * as yup from 'yup';
-import { config } from '../../utils/_constants';
-import { ErrorDispatch } from '../../utils/errorDispatch';
+import { config } from '../../../utils/_constants';
+import { ErrorDispatch } from '../../../utils/errorDispatch';
 
 const schema = yup.object().shape({
     id: yup.string().required(),

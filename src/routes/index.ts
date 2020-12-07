@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Redis } from 'ioredis';
-import redirectRoutes from './redirect';
-import userRoutes from './user';
+import redirectRoutes from './private/redirect';
+import userRoutes from './private/user';
 import { changePassword } from './public/changePassword';
 import { forgotPassword } from './public/forgotPassword';
 import { register } from './public/register';

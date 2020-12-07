@@ -1,6 +1,6 @@
 {
     "name": "url-shortner-app",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "Url Shortner",
     "main": "./src/index.ts",
     "scripts": {
@@ -17,6 +17,7 @@
     "author": "steviss",
     "license": "GPL-3.0-or-later",
     "devDependencies": {
+        "@types/geoip-lite": "^1.4.0",
         "@types/connect-redis": "^0.0.14",
         "@types/cors": "^2.8.7",
         "@types/express": "^4.17.7",
@@ -33,7 +34,7 @@
         "@types/yup": "^0.29.9",
         "nodemon": "^2.0.4",
         "ts-node": "^8.10.2",
-        "typescript": "^3.9.7"
+        "typescript": "^4.1.2"
     },
     "dependencies": {
         "argon2": "^0.26.2",
@@ -46,6 +47,7 @@
         "express-rate-limit": "^5.2.3",
         "express-session": "^1.17.1",
         "express-slow-down": "^1.3.1",
+        "geoip-lite": "^1.4.2",
         "helmet": "^4.2.0",
         "ioredis": "^4.17.3",
         "morgan": "^1.10.0",

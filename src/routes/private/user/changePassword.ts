@@ -6,9 +6,9 @@ import { slowDownConfig } from 'slowDown.config';
 import * as yup from 'yup';
 import { Redis } from 'ioredis';
 import argon2 from 'argon2';
-import { User } from '../../entities';
-import { ErrorDispatch } from '../../utils/errorDispatch';
-import { config } from '../../utils/_constants';
+import { User } from '../../../entities';
+import { ErrorDispatch } from '../../../utils/errorDispatch';
+import { config } from '../../../utils/_constants';
 
 const schema = yup.object().shape({
     token: yup.string().email('Invalid email').required('Required'),

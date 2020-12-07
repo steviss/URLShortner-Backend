@@ -1,5 +1,5 @@
-import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, UpdateDateColumn } from 'typeorm';
-import { User } from '.';
+import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, UpdateDateColumn, OneToMany } from 'typeorm';
+import { User, Click } from '.';
 
 @Entity()
 export class Redirect extends BaseEntity {
@@ -17,6 +17,9 @@ export class Redirect extends BaseEntity {
 
     @ManyToOne(() => User, (user) => user.redirects, { nullable: true })
     owner: User;
+
+    @OneToMany(() => Click, (click) => click.redirect, { nullable: true })
+    clicks: Click[];
 
     @CreateDateColumn()
     createdAt: Date;

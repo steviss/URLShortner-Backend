@@ -3,11 +3,12 @@ export interface ErrorMessage {
     message: string;
 }
 export const ErrorDispatch = (field: string, message: string) => {
-    return { errors: [{ field: field, message: message }] };
+    return { status: 'error', errors: [{ field: field, message: message }] };
 };
 
 export const ErrorDispatchArray = (errors: ErrorMessage[]) => {
     return {
+        status: 'error',
         errors: errors.map((error) => Object.assign({ field: error.field, message: error.message })),
     };
 };

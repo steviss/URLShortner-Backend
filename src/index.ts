@@ -1,4 +1,6 @@
 import 'reflect-metadata';
+import path from 'path';
+import fs from 'fs';
 import express from 'express';
 import Redis from 'ioredis';
 import cors from 'cors';
@@ -12,7 +14,7 @@ import { typeormConfig } from './typeorm.config';
 import { redisConfig } from './redis.config';
 import { config } from './utils/_constants';
 import { createConnection } from 'typeorm';
-import Entities from './entities';
+import { Click, User, Redirect } from './entities';
 import { routeMiddleware } from './routes';
 import { rateLimitConfig } from './rateLimit.config';
 import { slowDownConfig } from './slowDown.config';
@@ -30,7 +32,7 @@ const main = async () => {
     /* Connecting to DB */
     await createConnection({
         ...typeormConfig,
-        entities: Entities,
+        entities: [Click, User, Redirect],
         //ENABLE BELOW FOR FIRST RUN INSTALL (POPULATES MYSQL WITH NESCESSARY DATA)
         //synchronize: true,
     });
@@ -57,7 +59,11 @@ const main = async () => {
 
     /* Morgan Stuff */
     /* Logging */
-    app.use(morgan('common'));
+    app.use(
+        morgan('common', {
+            stream: fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' }),
+        }),
+    );
 
     /* Server Public Folder */
     app.use(express.static('./public'));

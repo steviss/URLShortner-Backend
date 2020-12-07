@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 export const config = {
+    __APP_NAME__: process.env.APP_NAME,
     __PROD__: process.env.NODE_ENV === 'production',
     __DBNAME__: process.env.DB_NAME,
     __DBUSER__: process.env.DB_USERNAME,

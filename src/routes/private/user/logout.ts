@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { NextFunction, Response, Request } from 'express';
-import { config } from '../../utils/_constants';
+import { config } from '../../../utils/_constants';
 
 const schema = yup.object().shape({
     logout: yup.boolean(),

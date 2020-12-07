@@ -2,9 +2,9 @@ import { NextFunction, Response, Request } from 'express';
 import { nanoid } from 'nanoid';
 import * as yup from 'yup';
 import { getRepository } from 'typeorm';
-import { Redirect } from '../../entities';
-import { config } from '../../utils/_constants';
-import { ErrorDispatch } from '../../utils/errorDispatch';
+import { Redirect } from '../../../entities';
+import { config } from '../../../utils/_constants';
+import { ErrorDispatch } from '../../../utils/errorDispatch';
 
 const schema = yup.object().shape({
     slug: yup
