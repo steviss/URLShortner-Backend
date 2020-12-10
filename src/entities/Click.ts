@@ -1,5 +1,5 @@
 import { Redirect } from '.';
-import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne } from 'typeorm';
+import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, JoinTable } from 'typeorm';
 
 @Entity()
 export class Click extends BaseEntity {
@@ -7,7 +7,7 @@ export class Click extends BaseEntity {
     id!: string;
 
     @Column()
-    redirectId: number;
+    redirectId: string;
 
     @Column({ nullable: true })
     referer: string;
@@ -18,6 +18,9 @@ export class Click extends BaseEntity {
     @CreateDateColumn()
     createdAt: Date;
 
-    @ManyToOne(() => Redirect, (redirect) => redirect.clicks)
+    @ManyToOne(() => Redirect, (redirect) => redirect.clicks, {
+        onDelete: 'CASCADE',
+    })
+    @JoinTable()
     redirect: Redirect;
 }

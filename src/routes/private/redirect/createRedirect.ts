@@ -5,6 +5,7 @@ import { getRepository } from 'typeorm';
 import { Redirect } from '../../../entities';
 import { config } from '../../../utils/_constants';
 import { ErrorDispatch } from '../../../utils/errorDispatch';
+import { SuccessDispatch } from '../../../utils/successDispatch';
 
 const schema = yup.object().shape({
     slug: yup
@@ -18,27 +19,30 @@ export const createRedirect = async (req: Request, res: Response, next: NextFunc
     let { url, slug } = req.body;
     try {
         if (url.includes(config.__DOMAIN__ as string)) {
-            return res.status(400).json(ErrorDispatch('url', "Please, don't use our domain. No loopies."));
+            return res.status(200).json(ErrorDispatch('url', "Please, don't use our domain. No loopies."));
+        }
+        if (!slug) {
+            slug = nanoid(5);
         }
         await schema.validate({
             slug,
             url,
         });
-        if (!slug) {
-            slug = nanoid(5);
-        }
         const existing = await Redirect.findOne({ slug: slug });
         if (existing) {
-            return res.status(400).json(ErrorDispatch('slug', 'Slug in use, try another.'));
+            return res.status(200).json(ErrorDispatch('slug', 'Slug in use, try another.'));
         }
         slug = slug.toLowerCase();
         try {
             let newRedirect = { url: url, slug: slug } as Redirect;
             if (req.session.userId) {
                 newRedirect.ownerId = req.session.userId;
+            } else {
+                newRedirect.claimKey = nanoid(12);
             }
             const created = (await getRepository(Redirect).insert({ ...newRedirect })).generatedMaps[0];
-            res.json(created);
+            let responseRedirect = Object.assign(newRedirect, created);
+            return res.status(200).json(SuccessDispatch('Redirect created.', responseRedirect));
         } catch (err) {
             return next(err);
         }

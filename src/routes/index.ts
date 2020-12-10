@@ -11,11 +11,11 @@ import { login } from './public/login';
 export const routeMiddleware = (redis: Redis) => {
     const router = Router();
     router.route('/r/:slug').get(redirect);
-    router.use('/redirect', redirectRoutes);
-    router.use('/user', userRoutes);
-    router.route('/login').post(login);
-    router.route('/register').post(register);
-    router.route('/changePassword').put((req, res, next) => changePassword(req, res, next, redis));
-    router.route('/forgotPassword').put((req, res, next) => forgotPassword(req, res, next, redis));
+    router.use('/api/redirect', redirectRoutes);
+    router.use('/api/user', userRoutes);
+    router.route('/api/public/login').post(login);
+    router.route('/api/public/register').post(register);
+    router.route('/api/public/changePassword').put((req, res, next) => changePassword(req, res, next, redis));
+    router.route('/api/public/forgotPassword').put((req, res, next) => forgotPassword(req, res, next, redis));
     return router;
 };

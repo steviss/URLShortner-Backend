@@ -4,6 +4,8 @@ import { getRepository } from 'typeorm';
 import argon2 from 'argon2';
 import { User } from '../../entities';
 import { ErrorDispatch } from '../../utils/errorDispatch';
+import { createMeObject } from '../private/user/me';
+import { SuccessDispatch } from '../../utils/successDispatch';
 
 const schema = yup.object().shape({
     password: yup.string().required('No password provided.').min(8, 'Password is too short - should be 8 chars minimum.'),
@@ -13,7 +15,7 @@ const schema = yup.object().shape({
 export const register = async (req: Request, res: Response, next: NextFunction) => {
     let { email, password } = req.body;
     if (req.session.userId) {
-        return res.status(400).json(ErrorDispatch('auth', 'Already logged in.'));
+        return res.status(200).json(ErrorDispatch('auth', 'Already logged in.'));
     }
     try {
         await schema.validate({
@@ -22,14 +24,14 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         });
         const existing = await User.findOne({ email: email });
         if (existing) {
-            return res.status(400).json(ErrorDispatch('email', 'E-mail already exists.'));
+            return res.status(200).json(ErrorDispatch('email', 'E-mail already exists.'));
         }
         try {
             const hashedPassword = await argon2.hash(password);
             let newUser = { email: email, password: hashedPassword } as User;
-            const created = (await getRepository(User).insert({ ...newUser })).generatedMaps[0];
+            const created = (await getRepository(User).insert({ ...newUser })).generatedMaps[0] as User;
             req.session.userId = created.id;
-            return res.status(302).redirect('/dashboard');
+            return res.status(200).json(SuccessDispatch('Registered successfully.', createMeObject(created)));
         } catch (err) {
             return next(err);
         }

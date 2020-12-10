@@ -5,6 +5,8 @@ import { ErrorDispatch } from '../../utils/errorDispatch';
 import { User } from '../../entities';
 import * as yup from 'yup';
 import argon2 from 'argon2';
+import { SuccessDispatch } from '../../utils/successDispatch';
+import { createMeObject } from '../private/user/me';
 
 const schema = yup.object().shape({
     token: yup.string().required('No token provided').min(36),
@@ -21,11 +23,11 @@ export const changePassword = async (req: Request, res: Response, next: NextFunc
         const tokenKey = `${config.__FORGOT_PASSWORD_PREFIX__}${token}`;
         const userId = await redis.get(tokenKey);
         if (!userId) {
-            return res.status(400).json(ErrorDispatch('token', 'E-mail forgot password token expired.'));
+            return res.status(200).json(ErrorDispatch('token', 'E-mail forgot password token expired.'));
         }
         const user = await User.findOne({ id: userId });
         if (!user) {
-            return res.status(400).json(ErrorDispatch('email', 'User account has been removed.'));
+            return res.status(200).json(ErrorDispatch('email', 'User account has been removed.'));
         }
         try {
             //change password.
@@ -34,7 +36,7 @@ export const changePassword = async (req: Request, res: Response, next: NextFunc
             await redis.del(tokenKey);
             //log the user in after changing password
             req.session.userId = user.id;
-            return res.status(200).json({ status: 'success', message: 'Password succesfully changed, logging you in..' });
+            return res.status(200).json(SuccessDispatch('Password succesfully changed, logging you in..', createMeObject(user)));
         } catch (err) {
             return next(err);
         }

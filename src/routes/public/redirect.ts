@@ -6,8 +6,10 @@ import { ErrorDispatch } from '../../utils/errorDispatch';
 export const redirect = async (req: Request, res: Response, _next: NextFunction) => {
     const { slug } = req.params;
     try {
+        console.log('redirect get');
         const redirect = await Redirect.findOne({ slug: slug });
         if (redirect) {
+            console.log('redirect get', redirect);
             await Click.create({ redirect: redirect, referer: req.get('Referrer'), address: req.ip }).save();
             return res.status(302).redirect(redirect.url);
         }

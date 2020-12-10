@@ -15,10 +15,13 @@ export class Redirect extends BaseEntity {
     @Column({ nullable: true })
     ownerId: string;
 
+    @Column({ type: 'text', nullable: true })
+    claimKey: string | null;
+
     @ManyToOne(() => User, (user) => user.redirects, { nullable: true })
     owner: User;
 
-    @OneToMany(() => Click, (click) => click.redirect, { nullable: true })
+    @OneToMany(() => Click, (click) => click.redirect, { nullable: true, eager: true })
     clicks: Click[];
 
     @CreateDateColumn()
