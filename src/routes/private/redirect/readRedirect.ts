@@ -9,12 +9,12 @@ const schema = yup.object().shape({
 });
 
 export const readRedirect = async (req: Request, res: Response, next: NextFunction) => {
-    let { id } = req.params;
+    let { id } = req.query;
     try {
         await schema.validate({
             id,
         });
-        const existing = await Redirect.findOne({ id });
+        const existing = await Redirect.findOne({ id: id as string });
         if (!req.session.userId) {
             return res.status(200).json(ErrorDispatch('auth', 'You need to be authenticated.'));
         }
