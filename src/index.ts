@@ -18,6 +18,7 @@ import { Click, User, Redirect } from './entities';
 import { routeMiddleware } from './routes';
 import { rateLimitConfig } from './rateLimit.config';
 import { slowDownConfig } from './slowDown.config';
+import { Server } from 'socket.io';
 
 /* Adding userId to Session Context */
 
@@ -97,10 +98,22 @@ const main = async () => {
     app.use('/', slowDown(slowDownConfig), rateLimit(rateLimitConfig), routeMiddleware(redis));
 
     /* Listen */
-    app.listen(config.__PORT__, () => {
+    const listen = app.listen(config.__PORT__, () => {
         console.log(`CORS: http://${config.__PROD__ ? config.__DOMAIN__ : config.__DEV_DOMAIN__}`);
         console.log(`Server started on port: ${config.__PORT__}`);
         console.log(`Is this production: ${config.__PROD__}`);
+    });
+    /* Socket IO */
+    const io = new Server(listen);
+    //odustani od ovoga zavrsi collections i zavrsi page pojedinacni, geolokaciju takodje. poslije react native udaraj
+    io.on('connection', (client) => {
+        console.log("io's ready");
+        client.on('event', (data: any) => {
+            console.log('event', data);
+        });
+        client.on('disconnect', () => {
+            console.log('disconnect');
+        });
     });
 };
 

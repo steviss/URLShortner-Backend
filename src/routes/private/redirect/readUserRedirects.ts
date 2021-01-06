@@ -17,7 +17,7 @@ export const readUserRedirects = async (req: Request, res: Response, next: NextF
             cursor,
             limit,
         });
-        const realLimit = Math.min(50, parseInt((limit as string) || '10', 10));
+        const realLimit = Math.min(50, parseInt((limit as string) || '50', 10));
         const reaLimitPlusOne = realLimit + 1;
         const realCursor = parseInt((cursor as string) || '0', 10);
         if (!req.session.userId) {
