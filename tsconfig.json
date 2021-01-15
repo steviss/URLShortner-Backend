@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es5",
         "module": "commonjs",
         "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
         "skipLibCheck": true,
@@ -13,7 +13,7 @@
         "strictFunctionTypes": true,
         "noImplicitThis": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": true,
+        "noUnusedParameters": false,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "allowSyntheticDefaultImports": true,

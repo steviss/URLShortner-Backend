@@ -2,23 +2,25 @@ import 'reflect-metadata';
 import path from 'path';
 import fs from 'fs';
 import express from 'express';
-import Redis from 'ioredis';
 import cors from 'cors';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import morgan from 'morgan';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import slowDown from 'express-slow-down';
-import { typeormConfig } from './typeorm.config';
+import Redis from 'ioredis';
 import { redisConfig } from './redis.config';
-import { config } from './utils/_constants';
 import { createConnection } from 'typeorm';
-import { Click, User, Redirect } from './entities';
-import { routeMiddleware } from './routes';
+import { typeormConfig } from './typeorm.config';
+import { config } from './utils/_constants';
+import rateLimit from 'express-rate-limit';
 import { rateLimitConfig } from './rateLimit.config';
+import slowDown from 'express-slow-down';
 import { slowDownConfig } from './slowDown.config';
+import { Click, User, Redirect } from './entities';
+//import { routeMiddleware } from './routes';
 import { Server } from 'socket.io';
+import { ApiRouter } from './api/ApiRouter';
+import './controllers';
 
 /* Adding userId to Session Context */
 
@@ -71,9 +73,10 @@ const main = async () => {
 
     /* Аccept JSON data оnly */
     app.use(express.json());
+
+    /* Enable Body Property Middleware */
     app.use(express.urlencoded({ extended: true }));
 
-    /* Express Slow Down */
     /* for reverse proxy stuff */
     app.enable('trust proxy');
 
@@ -95,7 +98,10 @@ const main = async () => {
     );
 
     /* Routes Middleware*/
-    app.use('/', slowDown(slowDownConfig), rateLimit(rateLimitConfig), routeMiddleware(redis));
+    //app.use('/', slowDown(slowDownConfig), rateLimit(rateLimitConfig), routeMiddleware(redis));
+    app.use(ApiRouter.init(redis));
+    /* Apply Api limitations */
+    app.use(slowDown(slowDownConfig), rateLimit(rateLimitConfig));
 
     /* Listen */
     const listen = app.listen(config.__PORT__, () => {
