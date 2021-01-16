@@ -11,7 +11,8 @@ import { SuccessDispatch } from '../utils/successDispatch';
 import { sendEmail } from '../utils/sendEmail';
 import { isAuth } from '../middleware/isAuth';
 import { ApiRouter, ResponseMessage } from '../api/ApiRouter';
-import { post, controller, put, useMiddleware, get } from '../decorators';
+import { post, controller, patch, useMiddleware, get } from '../decorators';
+import { createChangePasswordEmail } from '../utils/emailTemplates';
 
 export interface meObject {
     id: string;
@@ -115,8 +116,8 @@ export class AuthController {
         }
     }
 
-    @put('/changePassword')
-    async putChangePassword(req: Request, res: Response): Promise<ResponseMessage> {
+    @patch('/changePassword')
+    async patchChangePassword(req: Request, res: Response): Promise<ResponseMessage> {
         const redis: Redis = ApiRouter.getRedis();
         let { token, newPassword } = req.body;
         const schema = Yup.object().shape({
@@ -153,8 +154,8 @@ export class AuthController {
         }
     }
 
-    @put('/forgotPassword')
-    async putForgotPassword(req: Request, res: Response): Promise<ResponseMessage> {
+    @post('/forgotPassword')
+    async postForgotPassword(req: Request, res: Response): Promise<ResponseMessage> {
         const redis: Redis = ApiRouter.getRedis();
         let { email } = req.body;
         const schema = Yup.object().shape({
@@ -171,7 +172,7 @@ export class AuthController {
             try {
                 const token = v4();
                 await redis.set(`${config.__FORGOT_PASSWORD_PREFIX__}${token}`, user.id, 'ex', config.__FORGOT_PASSWORD_EXPIRES__);
-                const mailContents = `<a href="${config.__PROD__ ? config.__DOMAIN__ : config.__DEV_DOMAIN__}/forgot-password/${token}">Forgot Password Link</a>`;
+                const mailContents = await createChangePasswordEmail(email, token);
                 await sendEmail(email, mailContents);
                 return res.status(200).json(SuccessDispatch('E-mail succesfully sent. Forgot password initialized.', { emailSent: true }));
             } catch (err) {

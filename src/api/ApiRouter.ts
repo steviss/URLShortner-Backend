@@ -31,6 +31,9 @@ export class ApiRouter {
         ApiRouter.redis = redis;
     }
     static getRedis(): Redis {
+        if (!ApiRouter.instance) {
+            throw new Error('Redis instance is undefined, please use setRedis method to set a Redis instance.');
+        }
         return ApiRouter.redis;
     }
 }

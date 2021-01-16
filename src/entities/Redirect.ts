@@ -1,5 +1,5 @@
-import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, UpdateDateColumn, OneToMany } from 'typeorm';
-import { User, Click } from '.';
+import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, UpdateDateColumn, OneToMany, JoinTable, ManyToMany } from 'typeorm';
+import { User, Click, Collection } from '.';
 
 @Entity()
 export class Redirect extends BaseEntity {
@@ -8,6 +8,9 @@ export class Redirect extends BaseEntity {
 
     @Column({ unique: true })
     slug: string;
+
+    @Column({ nullable: true })
+    alias: string;
 
     @Column()
     url: string;
@@ -23,6 +26,10 @@ export class Redirect extends BaseEntity {
 
     @OneToMany(() => Click, (click) => click.redirect, { nullable: true, eager: true })
     clicks: Click[];
+
+    @ManyToMany(() => Collection, { nullable: true })
+    @JoinTable()
+    collections: Collection[];
 
     @CreateDateColumn()
     createdAt: Date;

@@ -1,6 +1,6 @@
 import { config } from '../_constants';
 
-export const createVerifyEmail = (to: string, verifyKey: string) => {
+export const createChangePasswordEmail = async (to: string, token: string) => {
     return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB">
@@ -31,7 +31,7 @@ export const createVerifyEmail = (to: string, verifyKey: string) => {
       <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
         <tr>
           <td style="color: #232323; font-weight: 600; font-family: 'Titillium Web', Verdana, sans-serif;">
-            <h1 style="font-size: 24px; margin: 0; text-align: center;">Welcome to ${config.__APP_NAME__}!</h1>
+            <h1 style="font-size: 24px; margin: 0; text-align: center;">Forgot Password form for ${config.__APP_NAME__}!</h1>
           </td>
         </tr>
 			<tr>
@@ -41,15 +41,20 @@ export const createVerifyEmail = (to: string, verifyKey: string) => {
         </tr>
         <tr>
           <td style="color: #153643;padding: 24px 0; font-family: 'Roboto', Arial, sans-serif; font-size: 16px; line-height: 24px;">
-            <p style="margin: 0; text-align: center;">Please verify your e-mail to unlock your account! </p>
+            <p style="margin: 0; text-align: center;">You have requested a password reset, please click on the link below to continue in resetting your password.</p>
           </td>
         </tr>
         <tr>
           <td style="line-height: 24px; padding: 24px 0 32px 0; text-align: center;">
                   <a href="${
                       config.__PROD__ ? config.__DOMAIN__ : config.__DEV_DOMAIN__
-                  }/verify/${verifyKey}" style="text-decoration: none; color: white; border: 1px solid #d1d1d1; background-color: #ff4b1f; padding: 12px 16px; border-radius: 4px; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25); text-align: center; font-family: 'Titillium Web', Verdana, sans-serif; font-weight: bold">Verify here.
+                  }/forgot-password/${token}" style="text-decoration: none; color: white; border: 1px solid #d1d1d1; background-color: #ff4b1f; padding: 12px 16px; border-radius: 4px; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25); text-align: center; font-family: 'Titillium Web', Verdana, sans-serif; font-weight: bold">Forgot Password Link.
                   </a>
+          </td>
+        </tr>
+        <tr>
+          <td style="color: #153643;padding: 24px 0; font-family: 'Roboto', Arial, sans-serif; font-size: 14px; line-height: 24px;">
+            <p style="margin: 0; text-align: center;">Ignore this e-mail if you didn't request this. Please, contact us if this continues to occur.</p>
           </td>
         </tr>
       </table>

@@ -16,7 +16,7 @@ import rateLimit from 'express-rate-limit';
 import { rateLimitConfig } from './rateLimit.config';
 import slowDown from 'express-slow-down';
 import { slowDownConfig } from './slowDown.config';
-import { Click, User, Redirect } from './entities';
+import Entities from './entities';
 //import { routeMiddleware } from './routes';
 import { Server } from 'socket.io';
 import { ApiRouter } from './api/ApiRouter';
@@ -35,7 +35,7 @@ const main = async () => {
     /* Connecting to DB */
     await createConnection({
         ...typeormConfig,
-        entities: [Click, User, Redirect],
+        entities: Entities,
         //ENABLE BELOW FOR FIRST RUN INSTALL (POPULATES MYSQL WITH NESCESSARY DATA)
         //synchronize: true,
     });

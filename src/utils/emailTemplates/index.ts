@@ -1,3 +1,4 @@
+import { createChangePasswordEmail } from './changePasswordEmail';
 import { createVerifyEmail } from './verifyEmail';
 
-export { createVerifyEmail };
+export { createVerifyEmail, createChangePasswordEmail };

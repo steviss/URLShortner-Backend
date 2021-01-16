@@ -1,5 +1,5 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm';
-import { Redirect } from '.';
+import { Redirect, Collection } from '.';
 
 @Entity()
 export class User extends BaseEntity {
@@ -20,4 +20,7 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Redirect, (redirect) => redirect.owner)
     redirects: Redirect[];
+
+    @OneToMany(() => Collection, (collection) => collection.owner)
+    collections: Collection[];
 }
