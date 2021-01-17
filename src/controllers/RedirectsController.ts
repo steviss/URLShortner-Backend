@@ -80,17 +80,19 @@ export class RedirectController {
 
     @post('/')
     async createRedirect(req: Request, res: Response): Promise<ResponseMessage> {
-        let { url, slug } = req.body;
+        let { url, slug, alias } = req.body;
         const schema = Yup.object().shape({
             slug: Yup.string()
                 .trim()
                 .matches(/^[\w\-]+$/i),
             url: Yup.string().trim().url().required(),
+            alias: Yup.string().min(3),
         });
         try {
             await schema.validate({
                 slug,
                 url,
+                alias,
             });
             if (url.includes(config.__DOMAIN__ as string)) {
                 return res.status(200).json(ErrorDispatch('url', "Please, don't use our domain. No loopies."));
@@ -104,7 +106,7 @@ export class RedirectController {
             }
             slug = slug.toLowerCase();
             try {
-                let newRedirect = { url: url, slug: slug } as Redirect;
+                let newRedirect = { url: url, slug: slug, alias: alias } as Redirect;
                 if (req.session.userId) {
                     newRedirect.ownerId = req.session.userId;
                 } else {
@@ -124,15 +126,17 @@ export class RedirectController {
     @put('/')
     @useMiddleware(isAuth)
     async updateRedirect(req: Request, res: Response): Promise<ResponseMessage> {
-        let { id, url } = req.body;
+        let { id, url, alias } = req.body;
         const schema = Yup.object().shape({
-            id: Yup.string().required(),
+            id: Yup.string().uuid().required(),
             url: Yup.string().trim().url().required(),
+            alias: Yup.string().min(3),
         });
         try {
             await schema.validate({
                 id,
                 url,
+                alias,
             });
             if (url.includes(config.__DOMAIN__ as string)) {
                 return res.status(200).json(ErrorDispatch('url', "Please, don't use our domain. No loopies."));
@@ -150,7 +154,7 @@ export class RedirectController {
                         id: id,
                         ownerId: req.session.userId,
                     },
-                    { url: url },
+                    { url: url, alias: alias },
                 );
                 const updatedRedirect = (await Redirect.findOne({ id: id })) as Redirect;
                 return res.status(200).json(SuccessDispatch('Redirect succesfully updated.', updatedRedirect));
