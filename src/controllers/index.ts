@@ -1,4 +1,4 @@
 export * from './AuthController';
-export * from './RedirectController';
-export * from './CollectionController';
+export * from './RedirectsController';
+export * from './CollectionsController';
 export * from './UserController';

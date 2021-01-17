@@ -10,7 +10,7 @@ import { config } from '../utils/_constants';
 import { ResponseMessage } from '../api/ApiRouter';
 import { post, controller, useMiddleware, put, del, get, patch } from '../decorators';
 
-@controller('/redirect')
+@controller('/redirects')
 export class RedirectController {
     @patch('/claim')
     @useMiddleware(isAuth)
@@ -51,7 +51,7 @@ export class RedirectController {
         }
     }
 
-    @get('/read')
+    @get('/')
     async readRedirect(req: Request, res: Response): Promise<ResponseMessage> {
         let { id } = req.body;
         const schema = Yup.object().shape({
@@ -78,7 +78,7 @@ export class RedirectController {
         }
     }
 
-    @post('/create')
+    @post('/')
     async createRedirect(req: Request, res: Response): Promise<ResponseMessage> {
         let { url, slug } = req.body;
         const schema = Yup.object().shape({
@@ -121,7 +121,7 @@ export class RedirectController {
         }
     }
 
-    @put('/update')
+    @put('/')
     @useMiddleware(isAuth)
     async updateRedirect(req: Request, res: Response): Promise<ResponseMessage> {
         let { id, url } = req.body;
@@ -162,7 +162,7 @@ export class RedirectController {
         }
     }
 
-    @del('/delete')
+    @del('/')
     @useMiddleware(isAuth)
     async deleteRedirect(req: Request, res: Response): Promise<ResponseMessage> {
         let { id } = req.body;

@@ -63,6 +63,7 @@ export class AuthController {
 
     @post('/login')
     async postLogin(req: Request, res: Response): Promise<ResponseMessage> {
+        let { email, password } = req.body;
         const schema = Yup.object().shape({
             password: Yup.string().required('No password provided.').min(8, 'Password is too short - should be 8 chars minimum.'),
             email: Yup.string().email('Invalid email').required('Required'),
@@ -70,7 +71,6 @@ export class AuthController {
         if (req.session.userId) {
             return res.status(200).json(ErrorDispatch('auth', 'Already logged in.'));
         }
-        let { email, password } = req.body;
         try {
             await schema.validate({
                 email,
