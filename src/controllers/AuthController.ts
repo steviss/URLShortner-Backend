@@ -116,7 +116,7 @@ export class AuthController {
         }
     }
 
-    @patch('/changePassword')
+    @patch('/change-password')
     async patchChangePassword(req: Request, res: Response): Promise<ResponseMessage> {
         const redis: Redis = ApiRouter.getRedis();
         let { token, newPassword } = req.body;
@@ -154,7 +154,7 @@ export class AuthController {
         }
     }
 
-    @post('/forgotPassword')
+    @post('/forgot-password')
     async postForgotPassword(req: Request, res: Response): Promise<ResponseMessage> {
         const redis: Redis = ApiRouter.getRedis();
         let { email } = req.body;
