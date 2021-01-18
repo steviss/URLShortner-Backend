@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid';
 import * as Yup from 'yup';
-import { getRepository } from 'typeorm';
+import { getConnection, getRepository } from 'typeorm';
 import { Request, Response } from 'express';
-import { Redirect } from '../entities';
+import { Collection, Redirect } from '../entities';
 import { ErrorDispatch } from '../utils/errorDispatch';
 import { SuccessDispatch } from '../utils/successDispatch';
 import { isAuth } from '../middleware/isAuth';
@@ -126,21 +126,18 @@ export class RedirectController {
     @put('/')
     @useMiddleware(isAuth)
     async updateRedirect(req: Request, res: Response): Promise<ResponseMessage> {
-        let { id, url, alias } = req.body;
+        let { id, alias, collections } = req.body;
         const schema = Yup.object().shape({
             id: Yup.string().uuid().required(),
-            url: Yup.string().trim().url().required(),
             alias: Yup.string().min(3),
+            collections: Yup.array().nullable(),
         });
         try {
             await schema.validate({
                 id,
-                url,
                 alias,
+                collections,
             });
-            if (url.includes(config.__DOMAIN__ as string)) {
-                return res.status(200).json(ErrorDispatch('url', "Please, don't use our domain. No loopies."));
-            }
             const redirect = await Redirect.findOne({ id: id });
             if (!redirect) {
                 return res.status(200).json(ErrorDispatch('404', 'Redirect not found.'));
@@ -149,12 +146,45 @@ export class RedirectController {
                 return res.status(200).json(ErrorDispatch('permissions', "You don't have permissions to modify this redirect."));
             }
             try {
+                const currentCollections = await getConnection().createQueryBuilder().relation(Redirect, 'collections').of(redirect).loadMany();
+                if (collections && collections.length > 0) {
+                    try {
+                        for (const collection of collections) {
+                            const findCollection = (await Collection.findOne({ id: collection })) as Collection;
+                            if (findCollection.ownerId === req.session.userId) {
+                                if (currentCollections.length > 0) {
+                                    for (const presentCollection of currentCollections) {
+                                        if (presentCollection.id !== collection) {
+                                            await getConnection().createQueryBuilder().relation(Redirect, 'collections').of(redirect).add(collection);
+                                        }
+                                    }
+                                } else {
+                                    await getConnection().createQueryBuilder().relation(Redirect, 'collections').of(redirect).add(collection);
+                                }
+                            } else {
+                                return res.status(200).json(ErrorDispatch('error', `Can't modify collection with ID: ${collection}, you have insufficient permissions.`));
+                            }
+                        }
+                    } catch (err) {
+                        return res.status(200).json(ErrorDispatch('error', err.message));
+                    }
+                } else {
+                    await getConnection()
+                        .createQueryBuilder()
+                        .relation(Redirect, 'collections')
+                        .of(redirect)
+                        .remove(
+                            currentCollections.map((collection) => {
+                                return { id: collection.id };
+                            }),
+                        );
+                }
                 await Redirect.update(
                     {
                         id: id,
                         ownerId: req.session.userId,
                     },
-                    { url: url, alias: alias },
+                    { alias: alias },
                 );
                 const updatedRedirect = (await Redirect.findOne({ id: id })) as Redirect;
                 return res.status(200).json(SuccessDispatch('Redirect succesfully updated.', updatedRedirect));

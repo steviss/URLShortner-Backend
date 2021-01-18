@@ -34,6 +34,7 @@ export class UserController {
                 .skip(realCursor)
                 .take(reaLimitPlusOne)
                 .leftJoinAndSelect('redirect.clicks', 'click')
+                .leftJoinAndSelect('redirect.collections', 'collection')
                 .orderBy('redirect.createdAt', 'DESC')
                 .getManyAndCount();
             return res.status(200).json(
@@ -66,6 +67,7 @@ export class UserController {
             const collection = await getConnection()
                 .getRepository(Collection)
                 .createQueryBuilder('collection')
+                .leftJoinAndSelect('collection.redirects', 'redirect')
                 .distinctOn(['collection.createdAt'])
                 .where('collection.ownerId = :id', { id: req.session.userId })
                 .skip(realCursor)
@@ -74,7 +76,7 @@ export class UserController {
                 .getManyAndCount();
             return res.status(200).json(
                 SuccessDispatch('User collections retrived.', {
-                    items: collection[0],
+                    items: collection,
                     total: collection[1],
                     hasMore: collection[1] > realCursor + reaLimitPlusOne,
                 }),

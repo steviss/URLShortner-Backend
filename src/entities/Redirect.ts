@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, UpdateDateColumn, OneToMany, JoinTable, ManyToMany } from 'typeorm';
+import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, UpdateDateColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { User, Click, Collection } from '.';
 
 @Entity()
@@ -27,7 +27,7 @@ export class Redirect extends BaseEntity {
     @OneToMany(() => Click, (click) => click.redirect, { nullable: true, eager: true })
     clicks: Click[];
 
-    @ManyToMany(() => Collection, { nullable: true, eager: true })
+    @ManyToMany(() => Collection, (collection) => collection.redirects, { nullable: true, eager: true, cascade: true })
     @JoinTable()
     collections: Collection[];
 
