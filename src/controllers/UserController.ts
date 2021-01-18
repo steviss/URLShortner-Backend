@@ -76,7 +76,7 @@ export class UserController {
                 .getManyAndCount();
             return res.status(200).json(
                 SuccessDispatch('User collections retrived.', {
-                    items: collection,
+                    items: collection[0],
                     total: collection[1],
                     hasMore: collection[1] > realCursor + reaLimitPlusOne,
                 }),
