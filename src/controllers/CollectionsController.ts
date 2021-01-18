@@ -12,7 +12,7 @@ import { post, controller, useMiddleware, put, del, get } from '../decorators';
 @controller('/collections')
 export class CollectionsController {
     @get('/')
-    async readRedirect(req: Request, res: Response): Promise<ResponseMessage> {
+    async readCollection(req: Request, res: Response): Promise<ResponseMessage> {
         let { id } = req.body;
         const schema = Yup.object().shape({
             id: Yup.string().required(),
@@ -39,7 +39,7 @@ export class CollectionsController {
     }
 
     @post('/')
-    async createRedirect(req: Request, res: Response): Promise<ResponseMessage> {
+    async createCollection(req: Request, res: Response): Promise<ResponseMessage> {
         let { name } = req.body;
         const schema = Yup.object().shape({
             name: Yup.string()
@@ -72,7 +72,7 @@ export class CollectionsController {
 
     @put('/')
     @useMiddleware(isAuth)
-    async updateRedirect(req: Request, res: Response): Promise<ResponseMessage> {
+    async updateCollection(req: Request, res: Response): Promise<ResponseMessage> {
         let { id, name } = req.body;
         const schema = Yup.object().shape({
             id: Yup.string().required(),
@@ -112,7 +112,7 @@ export class CollectionsController {
 
     @del('/')
     @useMiddleware(isAuth)
-    async deleteRedirect(req: Request, res: Response): Promise<ResponseMessage> {
+    async deleteCollection(req: Request, res: Response): Promise<ResponseMessage> {
         let { id } = req.body;
         const schema = Yup.object().shape({
             id: Yup.string().required(),

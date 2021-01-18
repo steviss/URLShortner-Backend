@@ -1,5 +1,5 @@
-import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, UpdateDateColumn } from 'typeorm';
-import { User } from '.';
+import { PrimaryGeneratedColumn, CreateDateColumn, Column, Entity, BaseEntity, ManyToOne, UpdateDateColumn, ManyToMany } from 'typeorm';
+import { Redirect, User } from '.';
 
 @Entity()
 export class Collection extends BaseEntity {
@@ -20,4 +20,7 @@ export class Collection extends BaseEntity {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @ManyToMany(() => Redirect, (redirect) => redirect.collections)
+    redirects: Redirect[];
 }

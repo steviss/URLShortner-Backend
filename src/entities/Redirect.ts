@@ -27,7 +27,7 @@ export class Redirect extends BaseEntity {
     @OneToMany(() => Click, (click) => click.redirect, { nullable: true, eager: true })
     clicks: Click[];
 
-    @ManyToMany(() => Collection, { nullable: true })
+    @ManyToMany(() => Collection, { nullable: true, eager: true })
     @JoinTable()
     collections: Collection[];
 
