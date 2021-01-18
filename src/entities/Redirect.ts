@@ -27,8 +27,12 @@ export class Redirect extends BaseEntity {
     @OneToMany(() => Click, (click) => click.redirect, { nullable: true, eager: true })
     clicks: Click[];
 
-    @ManyToMany(() => Collection, (collection) => collection.redirects, { nullable: true, eager: true, cascade: true })
-    @JoinTable()
+    @ManyToMany(() => Collection, (collection) => collection.redirects, { nullable: true, eager: true })
+    @JoinTable({
+        name: 'redirect_collections',
+        joinColumns: [{ name: 'redirectId' }],
+        inverseJoinColumns: [{ name: 'collectionId' }],
+    })
     collections: Collection[];
 
     @CreateDateColumn()

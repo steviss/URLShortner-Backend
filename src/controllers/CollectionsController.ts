@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import * as Yup from 'yup';
-import { getRepository } from 'typeorm';
+import { getConnection, getRepository } from 'typeorm';
 import { Request, Response } from 'express';
 import { Collection } from '../entities';
 import { ErrorDispatch } from '../utils/errorDispatch';
@@ -73,17 +73,19 @@ export class CollectionsController {
     @put('/')
     @useMiddleware(isAuth)
     async updateCollection(req: Request, res: Response): Promise<ResponseMessage> {
-        let { id, name } = req.body;
+        let { id, name, redirects } = req.body;
         const schema = Yup.object().shape({
             id: Yup.string().required(),
             name: Yup.string()
                 .trim()
                 .matches(/^[\w\-]+$/i),
+            redirects: Yup.array().of(Yup.string().uuid()).nullable(),
         });
         try {
             await schema.validate({
                 name,
                 id,
+                redirects,
             });
             const collection = await Collection.findOne({ id: id });
             if (!collection) {
@@ -93,6 +95,23 @@ export class CollectionsController {
                 return res.status(200).json(ErrorDispatch('permissions', "You don't have permissions to modify this collection."));
             }
             try {
+                const currentRelationships = await getConnection().createQueryBuilder().relation(Collection, 'redirects').of(collection).loadMany();
+                try {
+                    await getConnection()
+                        .createQueryBuilder()
+                        .relation(Collection, 'redirects')
+                        .of(collection)
+                        .addAndRemove(
+                            redirects.map((redirect: string) => {
+                                return { id: redirect };
+                            }) || [],
+                            currentRelationships.map((redirect) => {
+                                return { id: redirect.id };
+                            }),
+                        );
+                } catch (err) {
+                    return res.status(200).json(ErrorDispatch('error', err.message));
+                }
                 await Collection.update(
                     {
                         id: id,
@@ -100,8 +119,13 @@ export class CollectionsController {
                     },
                     { name: name },
                 );
-                const updatedCollection = (await Collection.findOne({ id: id })) as Collection;
-                return res.status(200).json(SuccessDispatch('Collection succesfully updated.', updatedCollection));
+                const updatedCollection = await getConnection()
+                    .getRepository(Collection)
+                    .createQueryBuilder('collection')
+                    .leftJoinAndSelect('collection.redirects', 'redirect')
+                    .where('collection.id = :id', { id: id })
+                    .getOne();
+                return res.status(200).json(SuccessDispatch('Collection succesfully updated.', updatedCollection as Collection));
             } catch (err) {
                 return res.status(200).json(ErrorDispatch('error', err.message));
             }

@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import * as Yup from 'yup';
 import { getConnection, getRepository } from 'typeorm';
 import { Request, Response } from 'express';
-import { Collection, Redirect } from '../entities';
+import { Redirect } from '../entities';
 import { ErrorDispatch } from '../utils/errorDispatch';
 import { SuccessDispatch } from '../utils/successDispatch';
 import { isAuth } from '../middleware/isAuth';
@@ -130,7 +130,7 @@ export class RedirectController {
         const schema = Yup.object().shape({
             id: Yup.string().uuid().required(),
             alias: Yup.string().min(3),
-            collections: Yup.array().nullable(),
+            collections: Yup.array().of(Yup.string().uuid()).nullable(),
         });
         try {
             await schema.validate({
@@ -146,38 +146,22 @@ export class RedirectController {
                 return res.status(200).json(ErrorDispatch('permissions', "You don't have permissions to modify this redirect."));
             }
             try {
-                const currentCollections = await getConnection().createQueryBuilder().relation(Redirect, 'collections').of(redirect).loadMany();
-                if (collections && collections.length > 0) {
-                    try {
-                        for (const collection of collections) {
-                            const findCollection = (await Collection.findOne({ id: collection })) as Collection;
-                            if (findCollection.ownerId === req.session.userId) {
-                                if (currentCollections.length > 0) {
-                                    for (const presentCollection of currentCollections) {
-                                        if (presentCollection.id !== collection) {
-                                            await getConnection().createQueryBuilder().relation(Redirect, 'collections').of(redirect).add(collection);
-                                        }
-                                    }
-                                } else {
-                                    await getConnection().createQueryBuilder().relation(Redirect, 'collections').of(redirect).add(collection);
-                                }
-                            } else {
-                                return res.status(200).json(ErrorDispatch('error', `Can't modify collection with ID: ${collection}, you have insufficient permissions.`));
-                            }
-                        }
-                    } catch (err) {
-                        return res.status(200).json(ErrorDispatch('error', err.message));
-                    }
-                } else {
+                const currentRelationships = await getConnection().createQueryBuilder().relation(Redirect, 'collections').of(redirect).loadMany();
+                try {
                     await getConnection()
                         .createQueryBuilder()
                         .relation(Redirect, 'collections')
                         .of(redirect)
-                        .remove(
-                            currentCollections.map((collection) => {
+                        .addAndRemove(
+                            collections.map((collection: string) => {
+                                return { id: collection };
+                            }) || [],
+                            currentRelationships.map((collection) => {
                                 return { id: collection.id };
                             }),
                         );
+                } catch (err) {
+                    return res.status(200).json(ErrorDispatch('error', err.message));
                 }
                 await Redirect.update(
                     {
@@ -186,8 +170,13 @@ export class RedirectController {
                     },
                     { alias: alias },
                 );
-                const updatedRedirect = (await Redirect.findOne({ id: id })) as Redirect;
-                return res.status(200).json(SuccessDispatch('Redirect succesfully updated.', updatedRedirect));
+                const updatedRedirect = await getConnection()
+                    .getRepository(Redirect)
+                    .createQueryBuilder('redirect')
+                    .leftJoinAndSelect('redirect.collections', 'collection')
+                    .where('redirect.id = :id', { id: id })
+                    .getOne();
+                return res.status(200).json(SuccessDispatch('Redirect succesfully updated.', updatedRedirect as Redirect));
             } catch (err) {
                 return res.status(200).json(ErrorDispatch('error', err.message));
             }
