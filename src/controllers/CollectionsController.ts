@@ -73,12 +73,15 @@ export class CollectionsController {
     @put('/')
     @useMiddleware(isAuth)
     async updateCollection(req: Request, res: Response): Promise<ResponseMessage> {
-        let { id, name, redirects } = req.body;
+        let { id, name, color, redirects } = req.body;
         const schema = Yup.object().shape({
             id: Yup.string().required(),
             name: Yup.string()
                 .trim()
                 .matches(/^[\w\-]+$/i),
+            color: Yup.string()
+                .matches(/^#([0-9A-F]{3}){1,2}$/i)
+                .nullable(),
             redirects: Yup.array().of(Yup.string().uuid()).nullable(),
         });
         try {
@@ -86,6 +89,7 @@ export class CollectionsController {
                 name,
                 id,
                 redirects,
+                color,
             });
             const collection = await Collection.findOne({ id: id });
             if (!collection) {
@@ -117,7 +121,7 @@ export class CollectionsController {
                         id: id,
                         ownerId: req.session.userId,
                     },
-                    { name: name },
+                    { name: name, color: color },
                 );
                 const updatedCollection = await getConnection()
                     .getRepository(Collection)

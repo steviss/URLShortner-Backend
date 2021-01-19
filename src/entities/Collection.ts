@@ -9,6 +9,11 @@ export class Collection extends BaseEntity {
     @Column({ unique: true })
     name: string;
 
+    @Column({
+        default: '#ddd',
+    })
+    color: string;
+
     @Column()
     ownerId: string;
 
