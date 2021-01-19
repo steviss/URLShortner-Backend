@@ -1,4 +1,2 @@
-import { createChangePasswordEmail } from './changePasswordEmail';
-import { createVerifyEmail } from './verifyEmail';
-
-export { createVerifyEmail, createChangePasswordEmail };
+export * from './changePasswordEmail';
+export * from './verifyEmail';

@@ -1,6 +1,6 @@
 'use strict';
 import nodemailer from 'nodemailer';
-import { config } from './_constants';
+import { config } from '../configs';
 
 // async..await is not allowed in global scope, must use a wrapper
 export async function sendEmail(to: string, html: string) {

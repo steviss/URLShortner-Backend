@@ -1,6 +1,5 @@
-import 'reflect-metadata';
 import { NextFunction, Request, Response, RequestHandler } from 'express';
-import { ErrorDispatch } from '../utils/errorDispatch';
+import { ErrorDispatch } from '../utils';
 import { ApiRouter } from '../api/ApiRouter';
 import { MetadataKeys } from './MetadataKeys';
 import { Methods } from './Methods';

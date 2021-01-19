@@ -2,11 +2,10 @@ import { nanoid } from 'nanoid';
 import * as Yup from 'yup';
 import { getConnection, getRepository } from 'typeorm';
 import { Request, Response } from 'express';
+import { config } from '../configs';
 import { Redirect } from '../entities';
-import { ErrorDispatch } from '../utils/errorDispatch';
-import { SuccessDispatch } from '../utils/successDispatch';
-import { isAuth } from '../middleware/isAuth';
-import { config } from '../utils/_constants';
+import { ErrorDispatch, SuccessDispatch } from '../utils';
+import { isAuth } from '../middleware';
 import { ResponseMessage } from '../api/ApiRouter';
 import { post, controller, useMiddleware, put, del, get, patch } from '../decorators';
 

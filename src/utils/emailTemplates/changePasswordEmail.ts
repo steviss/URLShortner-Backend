@@ -1,4 +1,4 @@
-import { config } from '../_constants';
+import { config } from '../../configs';
 
 export const createChangePasswordEmail = async (to: string, token: string) => {
     return `

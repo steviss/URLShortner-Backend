@@ -1,5 +1,5 @@
 import { ConnectionOptions } from 'typeorm';
-import { config } from './utils/_constants';
+import { config } from '.';
 
 export const typeormConfig = {
     host: config.__DBHOST__,

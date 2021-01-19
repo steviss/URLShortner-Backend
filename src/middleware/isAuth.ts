@@ -1,5 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
-import { ErrorDispatch } from '../utils/errorDispatch';
+import { ErrorDispatch } from '../utils/';
 
 export const isAuth = (req: Request, res: Response, next: NextFunction) => {
     if (!req.session.userId) {

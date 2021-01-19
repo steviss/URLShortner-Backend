@@ -3,9 +3,8 @@ import * as Yup from 'yup';
 import { getConnection, getRepository } from 'typeorm';
 import { Request, Response } from 'express';
 import { Collection } from '../entities';
-import { ErrorDispatch } from '../utils/errorDispatch';
-import { SuccessDispatch } from '../utils/successDispatch';
-import { isAuth } from '../middleware/isAuth';
+import { ErrorDispatch, SuccessDispatch, generateRandomColor } from '../utils';
+import { isAuth } from '../middleware';
 import { ResponseMessage } from '../api/ApiRouter';
 import { post, controller, useMiddleware, put, del, get } from '../decorators';
 
@@ -40,22 +39,29 @@ export class CollectionsController {
 
     @post('/')
     async createCollection(req: Request, res: Response): Promise<ResponseMessage> {
-        let { name } = req.body;
+        let { name, color } = req.body;
         const schema = Yup.object().shape({
             name: Yup.string()
                 .trim()
                 .matches(/^[\w\-]+$/i),
+            color: Yup.string()
+                .matches(/^#([0-9A-F]{3}){1,2}$/i)
+                .nullable(),
         });
         try {
             await schema.validate({
                 name,
+                color,
             });
             if (!name) {
                 name = nanoid(5);
             }
+            if (!color) {
+                color = generateRandomColor();
+            }
             name = name.toLowerCase();
             try {
-                let newCollection = { name: name } as Collection;
+                let newCollection = { name: name, color: color } as Collection;
                 if (req.session.userId) {
                     newCollection.ownerId = req.session.userId;
                 }
@@ -97,6 +103,9 @@ export class CollectionsController {
             }
             if (collection.ownerId !== req.session.userId) {
                 return res.status(200).json(ErrorDispatch('permissions', "You don't have permissions to modify this collection."));
+            }
+            if (!color) {
+                color = generateRandomColor();
             }
             try {
                 const currentRelationships = await getConnection().createQueryBuilder().relation(Collection, 'redirects').of(collection).loadMany();

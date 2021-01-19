@@ -4,15 +4,12 @@ import { v4 } from 'uuid';
 import { Redis } from 'ioredis';
 import { getRepository } from 'typeorm';
 import { Request, Response } from 'express';
-import { config } from '../utils/_constants';
+import { config } from '../configs';
+import { ErrorDispatch, SuccessDispatch, sendEmail, createChangePasswordEmail } from '../utils';
 import { User } from '../entities';
-import { ErrorDispatch } from '../utils/errorDispatch';
-import { SuccessDispatch } from '../utils/successDispatch';
-import { sendEmail } from '../utils/sendEmail';
-import { isAuth } from '../middleware/isAuth';
+import { isAuth } from '../middleware';
 import { ApiRouter, ResponseMessage } from '../api/ApiRouter';
 import { post, controller, patch, useMiddleware, get } from '../decorators';
-import { createChangePasswordEmail } from '../utils/emailTemplates';
 
 export interface meObject {
     id: string;

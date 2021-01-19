@@ -2,9 +2,8 @@ import * as Yup from 'yup';
 import { getConnection } from 'typeorm';
 import { Request, Response } from 'express';
 import { Collection, Redirect } from '../entities';
-import { ErrorDispatch } from '../utils/errorDispatch';
-import { SuccessDispatch } from '../utils/successDispatch';
-import { isAuth } from '../middleware/isAuth';
+import { ErrorDispatch, SuccessDispatch } from '../utils';
+import { isAuth } from '../middleware';
 import { ResponseMessage } from '../api/ApiRouter';
 import { controller, useMiddleware, get } from '../decorators';
 

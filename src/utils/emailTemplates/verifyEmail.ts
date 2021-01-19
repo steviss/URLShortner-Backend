@@ -1,4 +1,4 @@
-import { config } from '../_constants';
+import { config } from '../../configs';
 
 export const createVerifyEmail = (to: string, verifyKey: string) => {
     return `

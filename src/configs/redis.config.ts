@@ -1,5 +1,5 @@
 import { RedisOptions } from 'ioredis';
-import { config } from './utils/_constants';
+import { config } from '.';
 
 export const redisConfig = {
     host: config.__REDISHOST__,
