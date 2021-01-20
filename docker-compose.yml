@@ -39,7 +39,7 @@ services:
         depends_on:
             - redis
         ports:
-            - '8081:8081'
+            - '${RCOMM_PORT}:${RCOMM_PORT}'
         environment:
             - REDIS_HOST=${REDIS_HOST}
             - REDIS_PASSWORD=${REDIS_PASSWORD}
@@ -53,11 +53,11 @@ services:
         container_name: '${APP_NAME}-MySQL'
         command: --default-authentication-plugin=mysql_native_password
         ports:
-            - '3306:3306'
+            - '${DB_PORT}:${DB_PORT}'
         environment:
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
             - MYSQL_DATABASE=${DB_NAME}
-            - MYSQL_ROOT_HOST=mysql
+            - MYSQL_ROOT_HOST=${DB_HOSTNAME}
             - MYSQL_USER=${DB_USERNAME}
             - MYSQL_PASSWORD=${DB_PASSWORD}
         volumes:
@@ -70,9 +70,9 @@ services:
         image: phpmyadmin/phpmyadmin
         container_name: '${APP_NAME}-PHPMyAdmin'
         ports:
-            - '8082:80'
+            - '${PMA_PORT}'
         environment:
-            - PMA_HOST=mysql
+            - PMA_HOST=${DB_HOSTNAME}
             - PMA_USER=${DB_USERNAME}
             - PMA_PASSWORD=${DB_PASSWORD}
             - PHP_UPLOAD_MAX_FILESIZE=100MB
