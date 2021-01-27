@@ -83,9 +83,10 @@ export class RedirectController {
         const schema = Yup.object().shape({
             slug: Yup.string()
                 .trim()
-                .matches(/^[\w\-]+$/i),
+                .matches(/^$|^[\w\-]+$/i)
+                .nullable(),
             url: Yup.string().trim().url().required(),
-            alias: Yup.string().min(3),
+            alias: Yup.string().min(3).nullable(),
         });
         try {
             await schema.validate({
